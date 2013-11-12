@@ -1,4 +1,9 @@
 #!/bin/bash
+for color in {000..$SUPPORT}; do
+    FG[$color]="\e[38;5;${color}m"
+    BG[$color]="\e[48;5;${color}m"
+done
+
 PROMPT_STYLE="fancy"
 [[ "$TERM" == "linux" ]] && PROMPT_STYLE="basic"
 
