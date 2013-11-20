@@ -49,14 +49,9 @@ if [[ "$PROMPT_STYLE" == "fancy" ]]; then
 
         if [[ $INGIT == true ]]; then
             GBRANCH=$(git branch|grep '^*'|cut -f2 -d' ') 2> /dev/null
-            if [[ "$GBRANCH" == "master" ]]; then
-                GBRANCH="M"
-            else
-                GBRANCH="$GBRANCH"
-            fi
-        fi
-        if [[ -z $GBRANCH ]]; then
-            GBRANCH="-"
+            [[ "$GBRANCH" == "master" ]] && GBRANCH="M"
+            [[ "$GBRANCH" == "develop" ]] && GBRANCH="D"
+            [[ -z $GBRANCH ]] && GBRANCH="-"
         fi
 
     SEP_LEFT="▶"
