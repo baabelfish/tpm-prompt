@@ -63,7 +63,7 @@ precmd() {
 %{$(bC 237)%}%{$(fC 082)%} %~%b\
 %{$(bC 237)%}%{$(fC 082)%} $BPROMPT_SEP_RIGHT\
 %{$(bC 082)%}%{$(fC 232)%} %B$GBRANCH %b\
-%{$reset_color%}%{$(fC 082)%}$BPROMPT_SEP_RIGHT \
+%{$reset_color%}%{$(fC 082)%}$BPROMPT_SEP_LEFT \
 %{$reset_color%}%{$(fC 076)%}%B%T%b%{$reset_color%}"
 
     PROMPT="\
