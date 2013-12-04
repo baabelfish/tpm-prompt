@@ -52,6 +52,7 @@ rprompt_part() {
     RPROMPT="$RPROMPT%{$bg_color%}%{$fg_color%} $stuff"
 }
 
+
 precmd() {
     # Show return value
     ERR=$?
