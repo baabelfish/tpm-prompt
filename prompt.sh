@@ -13,11 +13,43 @@ if [[ "$TERM" == "linux" ]]; then
 fi
 
 bC() {
-    echo -ne "$BG[$1]"
+    if [[ $1 == "0" ]]; then
+        echo -ne $reset_color
+    else
+        echo -ne "$BG[$1]"
+    fi
 }
 
 fC() {
-    echo -ne "$FG[$1]"
+    if [[ $1 == "0" ]]; then
+        echo -ne $reset_color
+    else
+        echo -ne "$FG[$1]"
+    fi
+}
+
+prompt_part() {
+    local fg_color=$(fC $1)
+    local bg_color=$(bC $2)
+    local sep_fg_color=$(fC $2)
+    local sep_bg_color=$(bC $3)
+    local stuff=$4
+    PROMPT="$PROMPT%{$bg_color%}%{$fg_color%} $stuff"
+    PROMPT="$PROMPT%{$sep_bg_color%}%{$sep_fg_color%}$BPROMPT_SEP_LEFT"
+}
+
+prompt_end() {
+    PROMPT="$PROMPT%{$reset_color%}%b "
+}
+
+rprompt_part() {
+    local fg_color=$(fC $1)
+    local bg_color=$(bC $2)
+    local sep_fg_color=$(fC $2)
+    local sep_bg_color=$(bC $3)
+    local stuff=$4
+    RPROMPT="$RPROMPT%{$sep_bg_color%}%{$sep_fg_color%} $BPROMPT_SEP_RIGHT"
+    RPROMPT="$RPROMPT%{$bg_color%}%{$fg_color%} $stuff"
 }
 
 precmd() {
@@ -62,22 +94,17 @@ precmd() {
     # BPROMPT_=082
 
     PROMPT=""
-    PROMPT="$PROMPT%{$(bC 237)%}%{$(fC 082)%} %B%m %b"
-    PROMPT="$PROMPT%{$(bC 235)%}%{$(fC 237)%}$BPROMPT_SEP_LEFT"
-    PROMPT="$PROMPT%{$(bC 235)%}%{$(fC 112)%} %B$VENV "
-    PROMPT="$PROMPT%{$reset_color%}%{$(fC 235)%}$BPROMPT_SEP_LEFT"
-    PROMPT="$PROMPT%{$reset_color%}%b "
+    prompt_part 082 237 235 "%B%m %b"
+    prompt_part 082 235 0 "%B$VENV %b"
+    prompt_end
 
     right_last_char=082
     RPROMPT=""
-    RPROMPT="$RPROMPT%{$reset_color%}%{$(fC 237)%} $BPROMPT_SEP_RIGHT"
-    RPROMPT="$RPROMPT%{$(bC 237)%}%{$(fC 082)%} %~%b"
-    RPROMPT="$RPROMPT%{$(bC 237)%}%{$(fC 082)%} $BPROMPT_SEP_RIGHT"
-    RPROMPT="$RPROMPT%{$(bC 082)%}%{$(fC 232)%} %B$GBRANCH %b"
+    rprompt_part 082 235 0 "%~%b"
+    rprompt_part 232 082 235 "%B$GBRANCH %b"
     if [[ ! -z "$PROMPT_JOB" ]]; then
         right_last_char=237
-        RPROMPT="$RPROMPT%{$(bC 082)%}%{$(fC 237)%}$BPROMPT_SEP_RIGHT"
-        RPROMPT="$RPROMPT%{$(bC 237)%}%{$(fC 202)%} %B$PROMPT_JOB %b"
+        rprompt_part 202 237 082 "%B$PROMPT_JOB %b"
     fi
     RPROMPT="$RPROMPT%{$reset_color%}%{$(fC $right_last_char)%}$BPROMPT_SEP_LEFT "
     RPROMPT="$RPROMPT%{$reset_color%}%{$(fC 076)%}%B%T%b%{$reset_color%}"
