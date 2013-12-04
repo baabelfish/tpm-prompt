@@ -36,19 +36,19 @@ precmd() {
         VENV="»"
     fi
 
-    # Show branch name
+    # Git info
     d=$(pwd)
     INGIT=false
     while [[ ! -z "$d" ]] && [[ "$d" != "/" ]]; do
         [[ -d "$d"/.git ]] && INGIT=true && break
         d=${d%/*}
     done
-
     if [[ $INGIT == true ]]; then
         GBRANCH=$(git branch|grep '^*'|cut -f2 -d' ') 2> /dev/null
         [[ "$GBRANCH" == "master" ]] && GBRANCH="M"
         [[ "$GBRANCH" == "develop" ]] && GBRANCH="D"
         [[ -z $GBRANCH ]] && GBRANCH="-"
+        git diff --quiet || GBRANCH="⚡ "$GBRANCH
     fi
 
     [[ -z $BPROMPT_SEP_LEFT ]] && BPROMPT_SEP_LEFT="▶"
