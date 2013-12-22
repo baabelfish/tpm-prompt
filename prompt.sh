@@ -84,7 +84,7 @@ precmd() {
         [[ "$GBRANCH" == "master" ]] && GBRANCH="M"
         [[ "$GBRANCH" == "develop" ]] && GBRANCH="D"
         [[ -z $GBRANCH ]] && GBRANCH="-"
-        git diff --quiet || GBRANCH="⚡ "$GBRANCH
+        git diff --quiet || GBRANCH=$GBRANCH
     fi
 
     [[ -z $BPROMPT_SEP_LEFT ]] && BPROMPT_SEP_LEFT="▶"
