@@ -63,6 +63,9 @@ precmd() {
         ERR=""
     fi
 
+    mountpoint -q $(pwd)
+    is_mountepoint=$?
+
     # Show first job
     PROMPT_JOB=$(jobs|head -n 1|awk '{ print $4 }')
 
@@ -73,18 +76,21 @@ precmd() {
     fi
 
     # Git info
-    d=$(pwd)
-    INGIT=false
-    while [[ ! -z "$d" ]] && [[ "$d" != "/" ]]; do
-        [[ -d "$d"/.git ]] && INGIT=true && break
-        d=${d%/*}
-    done
-    if [[ $INGIT == true ]]; then
+    # d=$(pwd)
+    git rev-parse --git-dir 2> /dev/null > /dev/null
+    is_git=$?
+    # INGIT=false
+    # while [[ ! -z "$d" ]] && [[ "$d" != "/" ]]; do
+        # [[ -d "$d"/.git ]] && INGIT=true && break
+        # d=${d%/*}
+    # done
+    if [[ $is_git -eq 0 ]]; then
         GBRANCH=$(git branch|grep '^*'|cut -f2 -d' ') 2> /dev/null
         [[ "$GBRANCH" == "master" ]] && GBRANCH="M"
         [[ "$GBRANCH" == "develop" ]] && GBRANCH="D"
-        [[ -z $GBRANCH ]] && GBRANCH="-"
         git diff --quiet || GBRANCH=$GBRANCH
+    else
+        GBRANCH="-"
     fi
 
     [[ -z $BPROMPT_SEP_LEFT ]] && BPROMPT_SEP_LEFT="▶"
