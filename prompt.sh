@@ -63,7 +63,7 @@ precmd() {
         ERR=""
     fi
 
-    mountpoint -q $(pwd)
+    mountpoint -q "$(pwd)"
     is_mountepoint=$?
 
     # Show first job
@@ -93,8 +93,10 @@ precmd() {
         GBRANCH="-"
     fi
 
-    [[ -z $BPROMPT_SEP_LEFT ]] && BPROMPT_SEP_LEFT="▶"
-    [[ -z $BPROMPT_SEP_RIGHT ]] && BPROMPT_SEP_RIGHT="◀"
+    # [[ -z $BPROMPT_SEP_LEFT ]] && BPROMPT_SEP_LEFT="▶"
+    # [[ -z $BPROMPT_SEP_RIGHT ]] && BPROMPT_SEP_RIGHT="◀"
+    [[ -z $BPROMPT_SEP_LEFT ]] && BPROMPT_SEP_LEFT=""
+    [[ -z $BPROMPT_SEP_RIGHT ]] && BPROMPT_SEP_RIGHT=""
     # BPROMPT_=237
     # BPROMPT_=237
     # BPROMPT_=082
