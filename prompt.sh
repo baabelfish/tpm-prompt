@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 for color in {000..$SUPPORT}; do
     FG[$color]="\e[38;5;${color}m"
     BG[$color]="\e[48;5;${color}m"
@@ -11,6 +11,13 @@ if [[ "$TERM" == "linux" ]]; then
     prompt walters
     return
 fi
+
+# vimify
+bindkey -a u undo
+bindkey -a '^R' redo
+bindkey '^?' backward-delete-char
+bindkey '^H' backward-delete-char
+KEYTIMEOUT=1
 
 bC() {
     if [[ $1 == "0" ]]; then
@@ -44,14 +51,14 @@ prompt_end() {
 
 rprompt_part() {
     local fg_color=$(fC $1)
-    local bg_color=$(bC $2)
-    local sep_fg_color=$(fC $2)
+    local bg_color=$(bC $2) local sep_fg_color=$(fC $2)
     local sep_bg_color=$(bC $3)
     local stuff=$4
     RPROMPT="$RPROMPT%{$sep_bg_color%}%{$sep_fg_color%} $BPROMPT_SEP_RIGHT"
     RPROMPT="$RPROMPT%{$bg_color%}%{$fg_color%} $stuff"
 }
 
+VIMODE="I"
 
 precmd() {
     # Show return value
@@ -116,3 +123,22 @@ precmd() {
 $PROMPT"
     fi
 }
+
+function zle-line-init zle-keymap-select {
+    RPROMPT=""
+    rprompt_part 082 234 0 "${${KEYMAP/vicmd/N}/(main|viins)/I}"
+    rprompt_part 082 237 234 "%~%b"
+    rprompt_part 232 082 237 "%B$GBRANCH %b"
+    if [[ ! -z "$PROMPT_JOB" ]]; then
+        right_last_char=237
+        rprompt_part 202 237 082 "%B$PROMPT_JOB %b"
+    fi
+    RPROMPT="$RPROMPT%{$reset_color%}%{$(fC $right_last_char)%}$BPROMPT_SEP_LEFT "
+    RPROMPT=$RPROMPT"%{$reset_color%}%{$(fC 076)%}%B%T%b%{$reset_color%}"
+    RPS1=$RPROMPT
+    RPS2=${RPS1}
+    zle reset-prompt
+}
+
+zle -N zle-line-init
+zle -N zle-keymap-select
